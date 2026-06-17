@@ -1,0 +1,891 @@
+﻿@model IEnumerable<BREW_POS.Models.ListMenu>
+
+@{
+    Layout = "_KasirLayout";
+}
+@inject IHttpContextAccessor HttpContextAccessor
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+@if (TempData["Change"] != null)
+{
+    <div class="alert alert-info">
+        Kembalian: Rp @TempData["Change"]
+    </div>
+}
+<div class="row">
+
+    <!-- 🔥 MENU -->
+    <div class="col-md-8">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <div>
+                <h2 class="section-title mb-0">
+                    Brew POS
+                </h2>
+
+                <small class="text-muted">
+                    Smart cashier system
+                </small>
+            </div>
+
+            <div class="d-flex align-items-center gap-2 w-50">
+
+                <!-- SEARCH -->
+
+                <form method="get"
+                      asp-action="Create"
+                      class="flex-grow-1">
+
+                    <div class="input-group">
+
+                        <input type="text"
+                               id="searchInput"
+                               name="search"
+                               class="form-control"
+                               placeholder="Cari menu..." />
+
+                        <button class="btn btn-dark fw-semibold">
+                            🔎
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <!-- ADD MENU -->
+
+                <button class="btn btn-primary fw-semibold"
+                        data-bs-toggle="modal"
+                        data-bs-target="#menuModal">
+
+                    ➕ Menu
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mb-3">
+
+            <button type="button"
+                    class="btn btn-outline-dark btn-sm category-btn"
+                    data-category="all">
+
+                All
+
+            </button>
+
+            @foreach (var category in Model
+            .Where(x => !string.IsNullOrEmpty(x.Category))
+            .Select(x => x.Category)
+            .Distinct())
+            {
+                <button type="button"
+                        class="btn btn-outline-dark btn-sm category-btn"
+                        data-category="@category">
+
+                    @category
+
+                </button>
+            }
+
+        </div>
+
+        <div class="row" id="menuContainer">
+
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 mb-3 menu-item"
+                     data-category="@item.Category">
+
+                    <div class="card card-menu shadow-sm border-0 h-100">
+
+                        <div class="card-body">
+
+                            <h5 class="fw-bold">
+                                @item.MenuName
+                            </h5>
+
+                            @if (!string.IsNullOrEmpty(item.Category))
+                            {
+                                <span class="badge bg-light text-dark mb-2">
+                                    @item.Category
+                                </span>
+                            }
+
+                            <p class="text-muted mb-3">
+                                Rp @item.Price
+                            </p>
+
+                            @if (item.IsAvailable == true)
+                            {
+                                <form asp-controller="Menu"
+                                      asp-action="ToggleAvailability"
+                                      method="post"
+                                      class="mb-2">
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@item.MenuId" />
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger w-100">
+
+                                        Sold Out
+
+                                    </button>
+
+                                </form>
+
+                                <form asp-controller="Order"
+                                      asp-action="AddToCart"
+                                      method="post">
+
+                                    <input type="hidden"
+                                           name="MenuId"
+                                           value="@item.MenuId" />
+
+                                    <div class="d-flex">
+
+                                        <input type="number"
+                                               name="Qty"
+                                               value="1"
+                                               min="1"
+                                               class="form-control me-2" />
+
+                                        <button type="submit"
+                                                class="btn btn-dark fw-semibold">
+                                            +
+                                        </button>
+
+                                    </div>
+
+                                </form>
+                            }
+                            else
+                            {
+                                <div class="alert alert-danger py-2 text-center fw-bold">
+                                    SOLD OUT
+                                </div>
+
+                                <form asp-controller="Menu"
+                                      asp-action="ToggleAvailability"
+                                      method="post">
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@item.MenuId" />
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-success w-100">
+
+                                        Available Again
+
+                                    </button>
+
+                                </form>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+    <!-- 🔥 CART -->
+    <div class="col-md-4">
+
+        <div class="card shadow-sm cart-box">
+
+            <div class="card-body d-flex flex-column h-100">
+
+                <!-- HEADER CART -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <h4 class="mb-0">
+                        🛒 Current Cart
+                    </h4>
+
+                    <button class="btn btn-sm btn-outline-dark"
+                            data-bs-toggle="modal"
+                            data-bs-target="#billModal">
+
+                        📋 Bills
+
+                    </button>
+
+                </div>
+
+                @if (HttpContextAccessor.HttpContext.Session.GetString("CurrentBill") != null)
+                {
+                    <div class="alert alert-warning py-2">
+
+                        🔥 Bill Aktif:
+                        <strong>
+                            @HttpContextAccessor.HttpContext.Session.GetString("CurrentBill")
+                        </strong>
+
+                    </div>
+                }
+
+                <div class="cart-scroll flex-grow-1">
+
+                    <div id="cartContainer">
+
+                        Loading...
+
+                    </div>
+
+                </div>
+
+                <hr />
+
+                <div class="cart-footer">
+
+                    <!-- SAVE BILL -->
+
+                    <form asp-action="SaveCartAsBill"
+                          method="post">
+
+                        <input type="text"
+                               name="billName"
+                               placeholder="Nama Bill / Meja"
+                               class="form-control mb-3"
+                               required />
+
+                        <button class="btn btn-primary fw-semibold w-100 mb-2">
+
+                            💾 Save Bill
+
+                        </button>
+
+                    </form>
+
+                    <!-- PRINT BILL -->
+
+                    <button class="btn btn-outline-dark w-100 mb-2"
+                            onclick="printReceipt()">
+
+                        🖨 Print Bill
+
+                    </button>
+
+                    <!-- PAYMENT -->
+
+                    <button class="btn btn-dark fw-semibold w-100"
+                            data-bs-toggle="modal"
+                            data-bs-target="#paymentModal">
+
+                        💳 Payment
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- 🔥 BILL MODAL -->
+
+<div class="modal fade"
+     id="billModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content border-0 shadow-lg">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    📋 Open Bills
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <!-- NEW BILL -->
+                <div class="d-flex justify-content-end mb-4">
+
+                    <a href="/Order/NewBill"
+                       class="btn btn-success">
+
+                        ➕ New Bill
+
+                    </a>
+
+                </div>
+
+                <div id="billListContainer">
+
+                    Loading...
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- 🔥 RENAME BILL MODAL -->
+
+<div class="modal fade"
+     id="renameBillModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+
+        <div class="modal-content border-0 shadow-lg">
+
+            <form asp-controller="Order"
+                  asp-action="RenameBill"
+                  method="post">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Rename Bill
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           id="renameBillId"
+                           name="billId" />
+
+                    <label class="form-label fw-semibold">
+                        Nama Bill
+                    </label>
+
+                    <input type="text"
+                           id="renameBillName"
+                           name="billName"
+                           class="form-control"
+                           placeholder="Contoh: Meja 4A"
+                           required />
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Batal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-dark">
+                        Simpan
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- 🔥 DELETE BILL MODAL -->
+
+<div class="modal fade"
+     id="deleteBillModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+
+        <div class="modal-content border-0 shadow-lg">
+
+            <form asp-controller="Order"
+                  asp-action="DeleteBill"
+                  method="post">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Hapus Bill
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body text-center">
+
+                    <input type="hidden"
+                           id="deleteBillId"
+                           name="id" />
+
+                    <div style="font-size:48px;">
+                        ⚠️
+                    </div>
+
+                    <p class="mt-3 mb-1">
+                        Yakin ingin menghapus bill ini?
+                    </p>
+
+                    <strong id="deleteBillName"></strong>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Batal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-danger">
+                        Hapus
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- 🔥 PAYMENT MODAL -->
+
+<div class="modal fade"
+     id="paymentModal"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content border-0 shadow-lg">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    💳 Payment
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div id="paymentContainer">
+
+                    Loading...
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- 🔥 RECEIPT SUCCESS MODAL -->
+
+<div class="modal fade"
+     id="receiptModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content border-0 shadow-lg">
+
+            <div class="modal-body text-center p-5">
+
+                <div style="font-size:70px;">
+                    ✅
+                </div>
+
+                <h3 class="fw-bold mt-3">
+                    Payment Success
+                </h3>
+
+                <p class="text-muted mb-4">
+                    Pembayaran berhasil diproses
+                </p>
+
+                <div class="d-grid gap-2">
+
+                    <button class="btn btn-dark"
+                            onclick="printReceipt()">
+
+                        🖨 Print Receipt
+                    </button>
+
+                    <button class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+
+                        Tutup
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- 🔥 ADD MENU MODAL -->
+
+<div class="modal fade"
+     id="menuModal"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content border-0 shadow-lg">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    ➕ Tambah Menu
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <form asp-controller="Menu"
+                      asp-action="Create"
+                      method="post">
+
+                    <div class="mb-3">
+
+                        <label class="fw-semibold">
+                            Nama Menu
+                        </label>
+
+                        <input type="text"
+                               name="MenuName"
+                               class="form-control"
+                               placeholder="Contoh: Ice Americano"
+                               required />
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="fw-semibold">
+                            Harga
+                        </label>
+
+                        <input type="number"
+                               name="Price"
+                               class="form-control"
+                               placeholder="Masukkan harga"
+                               required />
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="fw-semibold">
+                            Kategori
+                        </label>
+
+                        <input type="text"
+                               name="Category"
+                               class="form-control"
+                               placeholder="Coffee / Non Coffee" />
+
+                    </div>
+
+                    <button class="btn btn-success w-100 fw-semibold">
+
+                        💾 Simpan Menu
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+
+    let lastPaidBillId = 0;
+
+    function loadCart() {
+        fetch('/Order/GetCart')
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("cartContainer").innerHTML = data;
+            });
+    }
+
+    loadCart();
+    setInterval(loadCart, 15000);
+
+    function loadBills() {
+        fetch('/Order/BillList?t=' + new Date().getTime())
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("billListContainer").innerHTML = data;
+            });
+    }
+
+    var billModal = document.getElementById('billModal');
+
+    if (billModal) {
+        billModal.addEventListener('show.bs.modal', function () {
+            loadBills();
+        });
+    }
+
+    function loadPayment() {
+        fetch('/Order/PaymentModal')
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("paymentContainer").innerHTML = data;
+                initializePaymentModal();
+            });
+    }
+
+    var paymentModal = document.getElementById('paymentModal');
+
+    if (paymentModal) {
+        paymentModal.addEventListener('show.bs.modal', function () {
+            loadPayment();
+        });
+    }
+
+    var searchInput = document.getElementById("searchInput");
+
+    if (searchInput) {
+        searchInput.addEventListener("keyup", function () {
+            let keyword = this.value.toLowerCase();
+            let menus = document.querySelectorAll(".card-menu");
+
+            menus.forEach(menu => {
+                let text = menu.innerText.toLowerCase();
+                menu.parentElement.style.display =
+                    text.includes(keyword) ? "block" : "none";
+            });
+        });
+    }
+        var categoryButtons =
+        document.querySelectorAll(".category-btn");
+
+    categoryButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            var selectedCategory =
+                this.getAttribute("data-category");
+
+            var menuItems =
+                document.querySelectorAll(".menu-item");
+
+            menuItems.forEach(function (item) {
+
+                var itemCategory =
+                    item.getAttribute("data-category");
+
+                if (selectedCategory === "all" ||
+                    itemCategory === selectedCategory) {
+
+                    item.style.display = "block";
+
+                }
+                else {
+
+                    item.style.display = "none";
+
+                }
+
+            });
+
+        });
+
+    });
+
+    function initializePaymentModal() {
+        let total = 0;
+
+        let totalText = document.querySelector("#paymentContainer h1");
+
+        if (totalText) {
+            total = parseInt(totalText.innerText.replace(/\D/g, ''));
+        }
+
+        let cashInput = document.getElementById("cashInput");
+        let paymentMethod = document.getElementById("paymentMethod");
+        let cashArea = document.getElementById("cashArea");
+
+        if (paymentMethod) {
+            paymentMethod.addEventListener("change", function () {
+                if (this.value !== "Cash") {
+                    cashArea.style.display = "none";
+                    cashInput.value = total;
+
+                    document.getElementById("changeText").innerText = "Rp 0";
+                }
+                else {
+                    cashArea.style.display = "block";
+                    cashInput.value = "";
+                }
+            });
+
+            paymentMethod.dispatchEvent(new Event('change'));
+        }
+
+        if (cashInput) {
+            cashInput.addEventListener("keyup", function () {
+                let cash = parseInt(this.value) || 0;
+                let change = cash - total;
+
+                document.getElementById("changeText").innerText =
+                    "Rp " + change.toLocaleString();
+            });
+        }
+
+        var paymentForm = document.getElementById("paymentForm");
+
+        if (paymentForm) {
+            paymentForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                let formData = new FormData(this);
+
+                fetch('/Order/ProcessBillPayment', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+
+                        lastPaidBillId = data.billId;
+
+                        bootstrap.Modal
+                            .getInstance(document.getElementById('paymentModal'))
+                            .hide();
+
+                        loadBills();
+
+                        new bootstrap.Modal(
+                            document.getElementById('receiptModal')
+                        ).show();
+                    }
+                });
+            });
+        }
+    }
+
+        function printReceipt() {
+
+        if (lastPaidBillId === 0) {
+
+            alert("Receipt belum tersedia");
+
+            return;
+
+        }
+
+        window.open(
+            '/Order/ReceiptBill/' + lastPaidBillId,
+            '_blank',
+            'width=400,height=700'
+        );
+
+    }
+
+        document.addEventListener("click", function (e) {
+
+        if (e.target.classList.contains("rename-btn")) {
+
+            var billId = e.target.getAttribute("data-id");
+            var billName = e.target.getAttribute("data-name");
+
+            document.getElementById("renameBillId").value = billId;
+            document.getElementById("renameBillName").value = billName;
+
+            var renameModal = new bootstrap.Modal(
+                document.getElementById("renameBillModal")
+            );
+
+            renameModal.show();
+        }
+
+    });
+
+        document.addEventListener("click", function (e) {
+
+        if (e.target.classList.contains("delete-bill-btn")) {
+
+            var billId = e.target.getAttribute("data-id");
+            var billName = e.target.getAttribute("data-name");
+
+            document.getElementById("deleteBillId").value = billId;
+            document.getElementById("deleteBillName").innerText = billName;
+
+            var deleteModal = new bootstrap.Modal(
+                document.getElementById("deleteBillModal")
+            );
+
+            deleteModal.show();
+        }
+
+    });
+
+</script>

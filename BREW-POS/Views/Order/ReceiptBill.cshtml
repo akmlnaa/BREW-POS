@@ -1,0 +1,143 @@
+﻿@model BREW_POS.Models.Bill
+
+@{
+    Layout = null;
+
+    var payment = Model.Payments.FirstOrDefault();
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    <title>Receipt</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            width: 280px;
+            margin: auto;
+            padding: 10px;
+            font-size: 13px;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .line {
+            border-top: 1px dashed #000;
+            margin: 10px 0;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        h2 {
+            margin-bottom: 4px;
+        }
+
+        .total {
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        @@media print {
+            button {
+                display: none;
+            }
+
+            body {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="center">
+        <h2>BREW POS</h2>
+        <div>Smart Coffee POS</div>
+        <div>@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</div>
+    </div>
+
+    <div class="line"></div>
+
+    <div>
+        <strong>Bill:</strong> @Model.BillName
+    </div>
+
+    <div>
+        <strong>Kode:</strong> @Model.BillCode
+    </div>
+
+    <div class="line"></div>
+
+    @foreach (var item in Model.BillDetails)
+    {
+        <div>
+            <strong>@item.Menu?.MenuName</strong>
+        </div>
+
+        <div class="row">
+            <span>@item.Qty x Rp @item.Price?.ToString("N0")</span>
+            <span>Rp @item.Subtotal?.ToString("N0")</span>
+        </div>
+    }
+
+    <div class="line"></div>
+
+    @{
+        decimal subtotal = Model.SubTotal ?? 0;
+        decimal grandTotal = Model.GrandTotal ?? 0;
+        decimal tax = grandTotal - subtotal;
+    }
+
+    <div class="row">
+        <span>Subtotal</span>
+        <span>Rp @subtotal.ToString("N0")</span>
+    </div>
+
+    <div class="row">
+        <span>Tax 10%</span>
+        <span>Rp @tax.ToString("N0")</span>
+    </div>
+
+    <div class="row total">
+        <span>Total</span>
+        <span>Rp @grandTotal.ToString("N0")</span>
+    </div>
+
+    <div class="row">
+        <span>Payment</span>
+        <span>@(payment?.PaymentMethod ?? "-")</span>
+    </div>
+
+    <div class="line"></div>
+
+    <div class="line"></div>
+
+    <div class="center">
+        Thank you for order<br />
+        Have a nice coffee day
+    </div>
+
+    <br />
+
+    <button onclick="window.print()">
+        Print
+    </button>
+
+    <script>
+        window.onload = function () {
+            window.print();
+        }
+    </script>
+
+</body>
+</html>

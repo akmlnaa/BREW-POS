@@ -1,0 +1,77 @@
+﻿@model BREW_POS.Models.ListMenu
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="container">
+
+    <h2 class="mb-4">Edit Menu</h2>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+
+            <form asp-action="EditMenu"
+                  method="post">
+
+                <input asp-for="MenuId"
+                       type="hidden" />
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Nama Menu
+                    </label>
+
+                    <input asp-for="MenuName"
+                           class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Kategori
+                    </label>
+
+                    <input asp-for="Category"
+                           class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Harga
+                    </label>
+
+                    <input asp-for="Price"
+                           class="form-control" />
+                </div>
+
+                <div class="form-check mb-3">
+
+                    <input asp-for="IsAvailable"
+                           class="form-check-input" />
+
+                    <label class="form-check-label">
+                        Available
+                    </label>
+
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    <button type="submit"
+                            class="btn btn-warning">
+                        Update
+                    </button>
+
+                    <a href="/Admin/Menus"
+                       class="btn btn-secondary">
+                        Kembali
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

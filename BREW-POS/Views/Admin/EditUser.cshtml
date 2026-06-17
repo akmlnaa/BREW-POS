@@ -1,0 +1,66 @@
+﻿@model BREW_POS.Models.User
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<h2 class="mb-4">Edit User</h2>
+
+<div class="card p-4">
+
+    <form asp-action="EditUser"
+          method="post">
+
+        <input type="hidden"
+               asp-for="UserId" />
+
+        <div class="mb-3">
+            <label class="fw-semibold">Nama Lengkap</label>
+            <input asp-for="FullName"
+                   class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="fw-semibold">Username</label>
+            <input asp-for="Username"
+                   class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="fw-semibold">Password Baru</label>
+            <input asp-for="PasswordHash"
+                   type="password"
+                   class="form-control"
+                   placeholder="Kosongkan jika tidak diganti" />
+        </div>
+
+        <div class="mb-3">
+            <label class="fw-semibold">Role</label>
+            <select asp-for="Role"
+                    class="form-select">
+                <option value="Admin">Admin</option>
+                <option value="Kasir">Kasir</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="fw-semibold">Status</label>
+            <select asp-for="IsActive"
+                    class="form-select">
+                <option value="true">Aktif</option>
+                <option value="false">Nonaktif</option>
+            </select>
+        </div>
+
+        <button class="btn btn-dark">
+            Simpan Perubahan
+        </button>
+
+        <a href="/Admin/Users"
+           class="btn btn-outline-secondary">
+            Kembali
+        </a>
+
+    </form>
+
+</div>

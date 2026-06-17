@@ -1,0 +1,202 @@
+﻿@model IEnumerable<BREW_POS.Models.ListMenu>
+
+@{
+    Layout = "_AdminLayout";
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["Error"]
+    </div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Menu Management</h2>
+
+    <a href="/Admin/CreateMenu"
+       class="btn btn-dark">
+        + Tambah Menu
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Nama Menu</th>
+                    <th>Kategori</th>
+                    <th>Harga</th>
+                    <th>Status</th>
+                    <th style="width: 260px;">Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">
+                            @item.MenuName
+                        </td>
+
+                        <td>
+                            @item.Category
+                        </td>
+
+                        <td>
+                            Rp @((item.Price ?? 0).ToString("N0"))
+                        </td>
+
+                        <td>
+                            @if (item.IsAvailable == false)
+                            {
+                                <span class="badge bg-danger">
+                                    Sold Out
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">
+                                    Available
+                                </span>
+                            }
+                        </td>
+
+                        <td>
+                            <div class="d-flex gap-2">
+
+                                <a href="/Admin/EditMenu/@item.MenuId"
+                                   class="btn btn-sm btn-warning">
+                                    Edit
+                                </a>
+
+                                <form asp-action="ToggleMenuAvailability"
+                                      method="post">
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@item.MenuId" />
+
+                                    @if (item.IsAvailable == false)
+                                    {
+                                        <button class="btn btn-sm btn-success">
+                                            Available
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-secondary">
+                                            Sold Out
+                                        </button>
+                                    }
+
+                                </form>
+
+                                <button type="button"
+                                        class="btn btn-sm btn-danger delete-menu-btn"
+                                        data-id="@item.MenuId"
+                                        data-name="@item.MenuName">
+                                    Delete
+                                </button>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- MODAL DELETE MENU -->
+<div class="modal fade"
+     id="deleteMenuModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+
+        <div class="modal-content border-0 shadow-lg">
+
+            <form asp-controller="Admin"
+                  asp-action="DeleteMenu"
+                  method="post">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Hapus Menu
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body text-center">
+
+                    <input type="hidden"
+                           id="deleteMenuId"
+                           name="id" />
+
+                    <div style="font-size:50px">
+                        ⚠️
+                    </div>
+
+                    <p class="mt-3">
+                        Yakin ingin menghapus menu berikut?
+                    </p>
+
+                    <strong id="deleteMenuName"></strong>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Batal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-danger">
+                        Hapus
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("click", function (e) {
+
+        if (e.target.classList.contains("delete-menu-btn")) {
+
+            document.getElementById("deleteMenuId").value =
+                e.target.dataset.id;
+
+            document.getElementById("deleteMenuName").innerText =
+                e.target.dataset.name;
+
+            new bootstrap.Modal(
+                document.getElementById("deleteMenuModal")
+            ).show();
+        }
+
+    });
+</script>

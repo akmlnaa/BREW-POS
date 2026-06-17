@@ -1,0 +1,13 @@
+﻿<h2>Pembayaran Berhasil</h2>
+
+@if (TempData["Change"] != null)
+{
+    <p>
+        Kembalian:
+        <b>Rp @TempData["Change"]</b>
+    </p>
+}
+
+<a href="/Order/Create">
+    Buat Transaksi Lagi
+</a>

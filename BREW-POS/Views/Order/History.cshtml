@@ -1,0 +1,77 @@
+﻿@model IEnumerable<BREW_POS.Models.Bill>
+
+@{
+    Layout = "_KasirLayout";
+}
+
+<h2 class="mb-4">📊 Riwayat Transaksi</h2>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        @if (!Model.Any())
+        {
+            <div class="text-center text-muted py-4">
+                Belum ada transaksi
+            </div>
+        }
+        else
+        {
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Bill</th>
+                        <th>Total</th>
+                        <th>Metode</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var bill in Model)
+                    {
+                        var payment = bill.Payments.FirstOrDefault();
+
+                        <tr>
+                            <td>
+                                @bill.BillDate?.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+
+                            <td>
+                                <strong>@bill.BillName</strong><br />
+                                <small class="text-muted">@bill.BillCode</small>
+                            </td>
+
+                            <td>
+                                Rp @bill.GrandTotal?.ToString("N0")
+                            </td>
+
+                            <td>
+                                @(payment?.PaymentMethod ?? "-")
+                            </td>
+
+                            <td>
+                                <span class="badge bg-success">
+                                    PAID
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+                                <a href="/Order/ReceiptBill/@bill.BillId"
+                                   target="_blank"
+                                   class="btn btn-sm btn-outline-dark">
+
+                                    🖨 Print
+
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </div>
+</div>

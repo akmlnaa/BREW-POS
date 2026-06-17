@@ -1,0 +1,157 @@
+﻿@{
+    Layout = "_AdminLayout";
+
+    var activeShift = ViewBag.ActiveShift;
+    var recentTransactions = ViewBag.RecentTransactions;
+}
+
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<div class="row">
+
+    <div class="col-md-3 mb-3">
+        <div class="card p-3">
+            <small class="text-muted">Sales Today</small>
+            <h3>Rp @ViewBag.TotalSalesToday.ToString("N0")</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card p-3">
+            <small class="text-muted">Transactions</small>
+            <h3>@ViewBag.TotalTransactionsToday</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card p-3">
+            <small class="text-muted">Total Menu</small>
+            <h3>@ViewBag.TotalMenus</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card p-3">
+            <small class="text-muted">Sold Out Menu</small>
+            <h3>@ViewBag.SoldOutMenus</h3>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mt-3">
+
+    <div class="col-md-3 mb-3">
+        <div class="card p-3">
+
+            <small class="text-muted">
+                Management
+            </small>
+
+            <h5>User Management</h5>
+
+            <a href="/Admin/Users"
+               class="btn btn-dark mt-2">
+
+                Kelola User
+
+            </a>
+
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card p-3">
+
+            <small class="text-muted">
+                Management
+            </small>
+
+            <h5>Menu Management</h5>
+
+            <a href="/Admin/Menus"
+               class="btn btn-dark mt-2">
+
+                Kelola Menu
+
+            </a>
+
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <div class="card p-3">
+
+            <small class="text-muted">
+                Report
+            </small>
+
+            <h5>Sales Report</h5>
+
+            <a href="/Admin/SalesReport"
+               class="btn btn-dark mt-2">
+
+                Lihat Report
+
+            </a>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="row mt-3">
+
+    <div class="col-md-5 mb-3">
+        <div class="card p-4 h-100">
+
+            <h5>Active Shift</h5>
+
+            @if (activeShift == null)
+            {
+                <p class="text-muted mb-0">Tidak ada shift aktif.</p>
+            }
+            else
+            {
+                <h4>@activeShift.ShiftName</h4>
+                <p class="text-muted">
+                    Start: @activeShift.StartTime
+                </p>
+                <h5>
+                    Rp @activeShift.TotalSales.ToString("N0")
+                </h5>
+            }
+
+        </div>
+    </div>
+
+    <div class="col-md-7 mb-3">
+        <div class="card p-4">
+
+            <h5>Recent Transactions</h5>
+
+            <table class="table align-middle mt-3">
+                <thead>
+                    <tr>
+                        <th>Bill</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var trx in recentTransactions)
+                    {
+                        <tr>
+                            <td>@trx.BillName</td>
+                            <td>@trx.BillDate</td>
+                            <td>Rp @trx.GrandTotal.ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</div>

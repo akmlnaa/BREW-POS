@@ -1,0 +1,411 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Kasir - BREW POS</title>
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        * {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        body {
+            background: #f4f7fb;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            height: 100vh;
+            width: 260px;
+            position: fixed;
+            background: linear-gradient( 180deg, #111827, #1f2937 );
+            color: white;
+            padding: 24px 18px;
+            border-top-right-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 10px 0 30px rgba(0,0,0,.08);
+        }
+
+            .sidebar h4 {
+                font-weight: 800;
+                letter-spacing: 1px;
+            }
+
+            .sidebar a {
+                display: block;
+                text-decoration: none;
+                padding: 14px 18px;
+                margin-bottom: 10px;
+                border-radius: 16px;
+                color: #d1d5db;
+                transition: .2s ease;
+                font-weight: 600;
+            }
+
+                .sidebar a:hover {
+                    background: rgba(255,255,255,.08);
+                    color: white;
+                    transform: translateX(5px);
+                }
+
+        /* CONTENT */
+
+        .content {
+            margin-left: 260px;
+            padding: 30px;
+        }
+
+        /* CARD */
+
+        .card {
+            border: none !important;
+            border-radius: 28px !important;
+            background: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,.05) !important;
+        }
+
+        .card-menu {
+            transition: .25s ease;
+            overflow: hidden;
+        }
+
+            .card-menu:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 40px rgba(0,0,0,.08);
+            }
+
+        /* BUTTON */
+
+        .btn {
+            border-radius: 18px !important;
+            font-weight: 700 !important;
+            padding: 12px 18px !important;
+            transition: .2s ease;
+            border: none !important;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+            }
+
+        .btn-dark {
+            background: #111827 !important;
+        }
+
+        .btn-primary {
+            background: linear-gradient( 135deg, #6366f1, #8b5cf6 ) !important;
+        }
+
+        .btn-success {
+            background: linear-gradient( 135deg, #10b981, #059669 ) !important;
+        }
+
+        .btn-outline-dark {
+            border: 2px solid #111827 !important;
+            background: white !important;
+            color: #111827 !important;
+        }
+
+        /* INPUT */
+
+        .form-control,
+        .form-select {
+            border-radius: 18px !important;
+            border: 1px solid #e5e7eb !important;
+            padding: 14px !important;
+            background: #f9fafb !important;
+        }
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: #6366f1 !important;
+                box-shadow: 0 0 0 4px rgba(99,102,241,.12) !important;
+            }
+
+        /* MODAL */
+
+        .modal-content {
+            border: none !important;
+            border-radius: 32px !important;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            border: none;
+            padding: 28px 28px 0;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .modal-body {
+            padding: 28px;
+        }
+
+        /* ALERT */
+
+        .alert {
+            border: none !important;
+            border-radius: 18px !important;
+        }
+
+        /* CART */
+
+        .cart-box {
+            position: sticky;
+            top: 20px;
+            height: calc(100vh - 50px);
+        }
+
+        #cartContainer {
+            background: #f9fafb;
+            border-radius: 22px;
+            padding: 18px;
+            /* 🔥 BIAR SCROLL */
+            max-height: 420px;
+            min-height: 320px;
+            overflow-y: auto;
+            /* smooth scroll */
+            scrollbar-width: thin;
+        }
+
+            /* CUSTOM SCROLLBAR */
+
+            #cartContainer::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            #cartContainer::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            #cartContainer::-webkit-scrollbar-thumb {
+                background: #d1d5db;
+                border-radius: 20px;
+            }
+
+                #cartContainer::-webkit-scrollbar-thumb:hover {
+                    background: #9ca3af;
+                }
+
+        /* ACTIVE BILL */
+
+        .bill-active {
+            background: linear-gradient( 135deg, #fef3c7, #fde68a );
+            border-radius: 20px;
+            padding: 16px;
+            font-weight: 600;
+        }
+
+        /* TYPOGRAPHY */
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 800 !important;
+            color: #111827;
+        }
+
+        /* HAMBURGER */
+
+        .menu-toggle {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            z-index: 9999;
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 20px;
+            background: #111827;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,.18);
+            transition: .3s ease;
+        }
+
+            .menu-toggle:hover {
+                transform: scale(1.05);
+            }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -260px;
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg,#111827,#1f2937);
+            padding: 24px 18px;
+            transition: .35s ease;
+            z-index: 9998;
+            border-top-right-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
+
+            /* SIDEBAR OPEN */
+
+            .sidebar.show {
+                left: 0;
+            }
+
+        /* CONTENT */
+
+        .content {
+            margin-left: 0;
+            padding: 30px;
+            transition: .35s ease;
+        }
+
+            /* CONTENT GESER */
+
+            .content.shift {
+                margin-left: 260px;
+            }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- HAMBURGER -->
+    <button id="menuToggle"
+            class="menu-toggle">
+
+        ☰
+
+    </button>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar"
+         id="sidebar">
+
+        <h4 class="text-center text-white">☕ BREW</h4>
+        <hr class="text-white" />
+
+        <a href="/Home/KasirDashboard">🏠 Beranda</a>
+        <a href="/Order/Create">🧾 Point Of Sale</a>
+        <a href="/Order/History">📊 Riwayat</a>
+        <a class="text-white"
+           data-bs-toggle="collapse"
+           href="#shiftMenu"
+           role="button">
+
+            🕒 Shift
+
+        </a>
+
+        <div class="collapse ms-3"
+             id="shiftMenu">
+
+            <a href="/Shift/Current"
+               class="text-white">
+
+                • Current Shift
+
+            </a>
+
+            <a href="/Shift/History"
+               class="text-white">
+
+                • Shift History
+
+            </a>
+
+        </div>
+
+        <a href="/Home/Setting">⚙️ Setting</a>
+        <a href="#"
+           data-bs-toggle="modal"
+           data-bs-target="#logoutModal">
+            🚪 Logout
+        </a>
+
+    </div>
+
+    <div class="content"
+         id="content">
+        @RenderBody()
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+        const menuToggle =
+            document.getElementById("menuToggle");
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        const content =
+            document.getElementById("content");
+
+        menuToggle.addEventListener("click", () => {
+
+            sidebar.classList.toggle("show");
+
+            content.classList.toggle("shift");
+
+        });
+
+    </script>
+    <div class="modal fade"
+         id="logoutModal"
+         tabindex="-1">
+
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+
+            <div class="modal-content border-0 shadow-lg">
+
+                <div class="modal-body text-center p-4">
+
+                    <div style="font-size:52px;">
+                        🚪
+                    </div>
+
+                    <h5 class="fw-bold mt-3">
+                        Logout?
+                    </h5>
+
+                    <p class="text-muted mb-4">
+                        Apakah kamu yakin ingin keluar dari sistem?
+                    </p>
+
+                    <div class="d-flex gap-2 justify-content-center">
+
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            Batal
+                        </button>
+
+                        <a href="/Users/Login"
+                           class="btn btn-dark">
+                            Ya, Logout
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>

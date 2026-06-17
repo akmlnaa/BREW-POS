@@ -1,0 +1,332 @@
+﻿@{
+    Layout = "_KasirLayout";
+
+    var shift = ViewBag.ActiveShift;
+    var topSelling = ViewBag.TopSelling;
+    var activeOpenBills = ViewBag.ActiveOpenBills;
+    var soldOutMenus = ViewBag.SoldOutMenus;
+}
+
+<div class="kasir-dashboard">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                👋 Beranda Kasir
+            </h2>
+            <p class="text-muted mb-0">
+                Ringkasan operasional kasir hari ini
+            </p>
+        </div>
+
+        <a href="/Order/Create"
+           class="btn btn-dark px-4 py-2">
+            🧾 Mulai Transaksi
+        </a>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-3 mb-3">
+            <div class="summary-card">
+                <small>Sales Today</small>
+                <h3>Rp @ViewBag.TotalSalesToday.ToString("N0")</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="summary-card">
+                <small>Orders Today</small>
+                <h3>@ViewBag.TotalOrdersToday</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="summary-card">
+                <small>Open Bills</small>
+                <h3>@ViewBag.OpenBills</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="summary-card">
+                <small>Active Shift</small>
+                <h3>@(shift?.ShiftName ?? "-")</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-2">
+
+        <div class="col-md-6 mb-3">
+            <div class="panel-card h-100">
+
+                <h5 class="fw-bold mb-4">
+                    ⭐ Top Selling Today
+                </h5>
+
+                @if (topSelling == null || topSelling.Count == 0)
+                {
+                    <p class="text-muted mb-0">
+                        Belum ada menu terjual hari ini.
+                    </p>
+                }
+                else
+                {
+                    foreach (var item in topSelling)
+                    {
+                        <div class="rank-row">
+                            <div>
+                                <strong>@item.MenuName</strong>
+                                <small>Terjual hari ini</small>
+                            </div>
+
+                            <span class="rank-badge">
+                                @item.QtySold
+                            </span>
+                        </div>
+                    }
+                }
+
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="panel-card h-100">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">
+                        🧾 Open Bill Aktif
+                    </h5>
+
+                    <a href="/Order/OpenBills"
+                       class="text-decoration-none">
+                        View All
+                    </a>
+                </div>
+
+                @if (activeOpenBills == null || activeOpenBills.Count == 0)
+                {
+                    <p class="text-muted mb-0">
+                        Tidak ada open bill aktif.
+                    </p>
+                }
+                else
+                {
+                    foreach (var bill in activeOpenBills)
+                    {
+                        <div class="bill-row">
+                            <div>
+                                <strong>@bill.BillName</strong>
+                                <small>@bill.BillDate?.ToString("dd MMM HH:mm")</small>
+                            </div>
+
+                            <span>
+                                Rp @((bill.GrandTotal ?? 0).ToString("N0"))
+                            </span>
+                        </div>
+                    }
+                }
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="panel-card mb-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0">
+                ☕ Sold Out Menu
+            </h5>
+
+            <small class="text-muted">
+                Menu tidak tersedia hari ini
+            </small>
+        </div>
+
+        @if (soldOutMenus == null || soldOutMenus.Count == 0)
+        {
+            <p class="text-success mb-0">
+                Semua menu tersedia.
+            </p>
+        }
+        else
+        {
+            <div class="soldout-list">
+                @foreach (var menu in soldOutMenus)
+                {
+                    <span class="soldout-chip">
+                        @menu.MenuName
+                    </span>
+                }
+            </div>
+        }
+
+    </div>
+
+    <div class="quick-actions mt-3">
+
+        <a href="/Order/Create" class="quick-card">
+            <span>🧾</span>
+            <strong>Point Of Sale</strong>
+            <small>Mulai transaksi baru</small>
+        </a>
+
+        <a href="/Order/History" class="quick-card">
+            <span>📊</span>
+            <strong>Transaction History</strong>
+            <small>Lihat transaksi selesai</small>
+        </a>
+
+        <a href="/Shift/Current" class="quick-card">
+            <span>🕘</span>
+            <strong>Shift</strong>
+            <small>Kelola shift aktif</small>
+        </a>
+
+    </div>
+
+</div>
+
+<style>
+    .kasir-dashboard {
+        padding-bottom: 30px;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 22px;
+        padding: 24px;
+        box-shadow: 0 14px 35px rgba(15, 23, 42, .06);
+        border: 1px solid #eef2f7;
+    }
+
+        .summary-card small {
+            color: #6b7280;
+            font-weight: 700;
+        }
+
+        .summary-card h3 {
+            margin-top: 10px;
+            font-weight: 900;
+            color: #0f172a;
+        }
+
+    .panel-card {
+        background: white;
+        border-radius: 24px;
+        padding: 28px;
+        box-shadow: 0 14px 35px rgba(15, 23, 42, .06);
+        border: 1px solid #eef2f7;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-bottom: 1px solid #eef2f7;
+    }
+
+        .info-row span {
+            color: #6b7280;
+        }
+
+        .info-row strong {
+            color: #111827;
+        }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .quick-card {
+        background: #0f172a;
+        color: white;
+        text-decoration: none;
+        border-radius: 24px;
+        padding: 26px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        transition: .2s;
+    }
+
+        .quick-card:hover {
+            transform: translateY(-4px);
+            color: white;
+            background: #1f2937;
+        }
+
+        .quick-card span {
+            font-size: 28px;
+        }
+
+        .quick-card strong {
+            font-size: 18px;
+        }
+
+        .quick-card small {
+            color: #cbd5e1;
+        }
+
+    .rank-row,
+    .bill-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid #eef2f7;
+    }
+
+        .rank-row:last-child,
+        .bill-row:last-child {
+            border-bottom: none;
+        }
+
+        .rank-row strong,
+        .bill-row strong {
+            display: block;
+            color: #111827;
+        }
+
+        .rank-row small,
+        .bill-row small {
+            display: block;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+    .rank-badge {
+        background: #0f172a;
+        color: white;
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-weight: 800;
+    }
+
+    .bill-row span {
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .soldout-list {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .soldout-chip {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+        padding: 10px 16px;
+        border-radius: 999px;
+        font-weight: 700;
+    }
+</style>

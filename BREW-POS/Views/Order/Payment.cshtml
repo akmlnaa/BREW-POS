@@ -1,0 +1,35 @@
+﻿@model BREW_POS.Models.Order
+
+<h2>Pembayaran</h2>
+
+@if (TempData["Error"] != null)
+{
+    <p style="color:red">
+        @TempData["Error"]
+    </p>
+}
+
+<p>
+    Total Bayar:
+    <b>Rp @Model.TotalAmount</b>
+</p>
+
+<form asp-action="ProcessPayment" method="post">
+
+    <input type="hidden"
+           name="OrderId"
+           value="@Model.OrderId" />
+
+    <label>Uang Bayar:</label>
+
+    <input type="number"
+           name="Cash"
+           required />
+
+    <br /><br />
+
+    <button type="submit">
+        Proses Pembayaran
+    </button>
+
+</form>

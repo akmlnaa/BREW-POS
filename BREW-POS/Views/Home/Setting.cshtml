@@ -1,0 +1,130 @@
+﻿@{
+    Layout = "_KasirLayout";
+}
+
+<h2 class="fw-bold mb-4">⚙️ Setting</h2>
+
+<div class="row">
+
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 shadow-sm p-4">
+
+            <h5 class="fw-bold mb-3">👤 Cashier Profile</h5>
+
+            <div class="setting-row">
+                <span>Nama</span>
+                <strong>@(ViewBag.FullName ?? "-")</strong>
+            </div>
+
+            <div class="setting-row">
+                <span>Username</span>
+                <strong>@(ViewBag.Username ?? "-")</strong>
+            </div>
+
+            <div class="setting-row">
+                <span>Role</span>
+                <strong>@(ViewBag.Role ?? "Kasir")</strong>
+            </div>
+
+            <div class="setting-row">
+                <span>Status</span>
+                <span class="badge bg-success">Active</span>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 shadow-sm p-4">
+
+            <h5 class="fw-bold mb-3">🏪 Outlet Information</h5>
+
+            <div class="setting-row">
+                <span>Outlet</span>
+                <strong>BREW POS Coffee</strong>
+            </div>
+
+            <div class="setting-row">
+                <span>Type</span>
+                <strong>Coffee Shop & F&amp;B</strong>
+            </div>
+
+            <div class="setting-row">
+                <span>System</span>
+                <strong>BREW POS</strong>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="row mt-2">
+
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 shadow-sm p-4">
+
+            <h5 class="fw-bold mb-3">🧾 Receipt Information</h5>
+
+            <div class="setting-row">
+                <span>Store Name</span>
+                <strong>BREW POS Coffee</strong>
+            </div>
+
+            <div class="setting-row">
+                <span>Footer</span>
+                <strong>Thank you for your order Have a nice coffee day</strong>
+            </div>
+
+            <div class="setting-row">
+                <span>Tax</span>
+                <strong>10%</strong>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 shadow-sm p-4">
+
+            <h5 class="fw-bold mb-3">🔐 Account Action</h5>
+
+            <p class="text-muted">
+                Gunakan tombol di bawah untuk keluar dari akun kasir.
+            </p>
+
+            <button type="button"
+                    class="btn btn-dark"
+                    data-bs-toggle="modal"
+                    data-bs-target="#logoutModal">
+                Logout
+            </button>
+
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .setting-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .setting-row:last-child {
+        border-bottom: none;
+    }
+
+    .setting-row span {
+        color: #6b7280;
+        font-weight: 600;
+    }
+
+    .setting-row strong {
+        color: #111827;
+        font-weight: 800;
+    }
+</style>

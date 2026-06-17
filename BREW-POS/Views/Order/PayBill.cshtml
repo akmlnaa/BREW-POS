@@ -1,0 +1,66 @@
+﻿@model BREW_POS.Models.Bill
+
+@{
+    Layout = "_KasirLayout";
+}
+
+<h2 class="mb-4">💳 Pembayaran</h2>
+
+<div class="card shadow p-3">
+
+    <h5>Detail Pesanan</h5>
+
+    <table class="table table-bordered">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Menu</th>
+                <th>Qty</th>
+                <th>Harga</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model.BillDetails)
+            {
+                <tr>
+                    <td>@item.Menu.MenuName</td>
+                    <td>@item.Qty</td>
+                    <td>Rp @item.Price</td>
+                    <td>Rp @item.Subtotal</td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+    <hr />
+
+    <h4>Total: Rp @Model.SubTotal</h4>
+
+    <form asp-action="ProcessBillPayment" method="post">
+
+        <input type="hidden" name="BillId" value="@Model.BillId" />
+
+        <div class="mb-3">
+            <label>Uang Bayar</label>
+            <input type="number" name="Cash" class="form-control" required />
+        </div>
+
+        <button class="btn btn-success">
+            Proses Pembayaran
+        </button>
+
+    </form>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger mt-3">
+            @TempData["Error"]
+        </div>
+    }
+
+</div>

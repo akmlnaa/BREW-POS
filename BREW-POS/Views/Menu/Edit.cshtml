@@ -1,0 +1,38 @@
+﻿@model BREW_POS.Models.ListMenu
+
+<h2>Edit Menu</h2>
+
+<form asp-action="Edit">
+
+    <input type="hidden" asp-for="MenuId" />
+
+    <div>
+        <label>Nama Menu</label>
+        <input asp-for="MenuName" />
+    </div>
+
+    <div>
+        <label>Kategori</label>
+        <input asp-for="Category" />
+    </div>
+
+    <div>
+        <label>Harga</label>
+        <input asp-for="Price" />
+    </div>
+
+    <div>
+        <label>Status</label>
+        <select asp-for="IsAvailable">
+            <option value="true">Tersedia</option>
+            <option value="false">Tidak Tersedia</option>
+        </select>
+    </div>
+
+    <br />
+
+    <button type="submit">
+        Update
+    </button>
+
+</form>

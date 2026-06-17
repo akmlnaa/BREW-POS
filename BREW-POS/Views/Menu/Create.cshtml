@@ -1,0 +1,38 @@
+﻿@model BREW_POS.Models.ListMenu
+
+<div class="container mt-5">
+
+    <h2>Tambah Menu</h2>
+
+    <form asp-action="Create">
+
+        <div class="mb-3">
+            <label class="form-label">Nama Menu</label>
+            <input asp-for="MenuName" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Kategori</label>
+            <input asp-for="Category" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Harga</label>
+            <input asp-for="Price" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select asp-for="IsAvailable" class="form-select">
+                <option value="true">Tersedia</option>
+                <option value="false">Tidak Tersedia</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Simpan
+        </button>
+
+    </form>
+
+</div>

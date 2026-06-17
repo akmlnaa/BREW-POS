@@ -1,0 +1,69 @@
+﻿@model BREW_POS.Models.Order
+
+<h2>Struk Pembayaran</h2>
+
+<hr />
+
+<p>
+    Tanggal:
+    <b>@DateTime.Now.ToString("dd-MM-yyyy HH:mm")</b>
+</p>
+
+<table border="1">
+
+    <thead>
+        <tr>
+            <th>Menu</th>
+            <th>Qty</th>
+            <th>Harga</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model.OrderDetails)
+        {
+            <tr>
+
+                <td>
+                    @item.Menu.MenuName
+                </td>
+
+                <td>
+                    @item.Qty
+                </td>
+
+                <td>
+                    Rp @item.Price
+                </td>
+
+                <td>
+                    Rp @item.Subtotal
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+<hr />
+
+<p>
+    <b>Total: Rp @Model.TotalAmount</b>
+</p>
+
+@if (TempData["Change"] != null)
+{
+    <p>
+        <b>Kembalian: Rp @TempData["Change"]</b>
+    </p>
+}
+
+<br />
+
+<a href="/Order/Create">
+    Transaksi Baru
+</a>

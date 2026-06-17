@@ -1,0 +1,149 @@
+﻿@model BREW_POS.Models.Shift
+
+@{
+    Layout = "_KasirLayout";
+
+    decimal cashSales = ViewBag.CashSales ?? 0;
+    decimal nonCashSales = ViewBag.NonCashSales ?? 0;
+    decimal totalExpected = ViewBag.TotalExpected ?? 0;
+    int soldItems = ViewBag.SoldItems ?? 0;
+}
+
+<h2 class="mb-4">Shift Details</h2>
+
+@if (Model == null)
+{
+    <div class="card p-4">
+        <h4>Belum ada shift aktif</h4>
+
+        <form asp-controller="Shift"
+              asp-action="StartShift"
+              method="post"
+              class="mt-3">
+            <input type="text"
+                   name="shiftName"
+                   class="form-control mb-3"
+                   placeholder="Nama Shift, contoh: Pagi"
+                   required />
+
+            <button class="btn btn-dark">
+                Start Shift
+            </button>
+        </form>
+    </div>
+}
+else
+{
+    <div class="card p-4 shadow-sm">
+
+        <a href="/Shift/Print/@Model.ShiftId"
+           target="_blank"
+           class="btn btn-outline-primary w-100 mb-4">
+            Print Summary Shift Report
+        </a>
+
+        <div class="shift-row">
+            <span>Name</span>
+            <strong>@Model.ShiftName</strong>
+        </div>
+
+        <div class="shift-row">
+            <span>Outlet</span>
+            <strong>BREW POS Coffee</strong>
+        </div>
+
+        <div class="shift-row">
+            <span>Starting Shift</span>
+            <strong>@Model.StartTime.ToString("dd MMM yyyy HH:mm")</strong>
+        </div>
+
+        <div class="shift-row">
+            <span>Ending Shift</span>
+            <strong>-</strong>
+        </div>
+
+        <div class="shift-row">
+            <span>Sold Items</span>
+            <strong>@soldItems</strong>
+        </div>
+
+        <div class="shift-row">
+            <span>Refunded Items</span>
+            <strong>0</strong>
+        </div>
+
+        <h5 class="mt-4 mb-3">Cash</h5>
+
+        <div class="shift-row indent">
+            <span>Starting Cash</span>
+            <strong>Rp 0</strong>
+        </div>
+
+        <div class="shift-row indent">
+            <span>Cash Sales</span>
+            <strong>Rp @cashSales.ToString("N0")</strong>
+        </div>
+
+        <h5 class="mt-4 mb-3">Non Cash</h5>
+
+        <div class="shift-row indent">
+            <span>EDC / QRIS</span>
+            <strong>Rp @nonCashSales.ToString("N0")</strong>
+        </div>
+
+        <h5 class="mt-4 mb-3">Total</h5>
+
+        <div class="shift-row indent">
+            <span>Total Expected</span>
+            <strong>Rp @totalExpected.ToString("N0")</strong>
+        </div>
+
+        <div class="shift-row indent">
+            <span>Total Actual</span>
+            <strong>Rp @totalExpected.ToString("N0")</strong>
+        </div>
+
+        <div class="shift-row indent">
+            <span>Difference</span>
+            <strong>Rp 0</strong>
+        </div>
+
+        <form asp-controller="Shift"
+              asp-action="EndShift"
+              method="post"
+              class="mt-4">
+
+            <input type="hidden"
+                   name="id"
+                   value="@Model.ShiftId" />
+
+            <button class="btn btn-danger w-100">
+                End Shift
+            </button>
+        </form>
+
+    </div>
+}
+
+<style>
+    .shift-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 18px 8px;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 16px;
+    }
+
+        .shift-row span {
+            color: #6b7280;
+        }
+
+        .shift-row strong {
+            color: #111827;
+            font-weight: 700;
+        }
+
+    .indent {
+        padding-left: 40px;
+    }
+</style>

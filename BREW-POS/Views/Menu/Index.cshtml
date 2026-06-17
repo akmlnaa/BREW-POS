@@ -1,0 +1,47 @@
+﻿@model IEnumerable<BREW_POS.Models.ListMenu>
+
+<h2>Daftar Menu</h2>
+
+<a href="/Menu/Create" class="btn btn-success mb-3">
+    + Tambah Menu
+</a>
+
+<table class="table table-bordered table-striped mt-3">
+
+    <thead>
+        <tr>
+            <th>Nama</th>
+            <th>Kategori</th>
+            <th>Harga</th>
+            <th>Status</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>@item.MenuName</td>
+                <td>@item.Category</td>
+                <td>@item.Price</td>
+                <td>@item.IsAvailable</td>
+
+                <td>
+
+                    <a href="/Menu/Edit/@item.MenuId" class="btn btn-warning btn-sm">Edit</a>
+
+                    |
+
+                    <a href="/Menu/Delete/@item.MenuId" class="btn btn-danger btn-sm">Delete</a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

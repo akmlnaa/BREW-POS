@@ -1,0 +1,51 @@
+﻿@model IEnumerable<BREW_POS.Models.Bill>
+
+@{
+    Layout = "_KasirLayout";
+}
+
+<h2 class="mb-4">📋 Bill Aktif</h2>
+
+<div class="card shadow p-3">
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nama Bill</th>
+                <th>Tanggal</th>
+                <th>Total</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var bill in Model)
+            {
+                <tr>
+                    <td>@bill.BillId</td>
+                    <td>@bill.BillName</td>
+                    <td>@bill.BillDate</td>
+                    <td>Rp @bill.SubTotal</td>
+
+                    <td>
+                        <a href="/Order/OpenBill/@bill.BillId"
+                           class="btn btn-primary btn-sm">
+                            Pilih
+                        </a>
+
+                        <a href="/Order/PayBill/@bill.BillId"
+                           class="btn btn-success btn-sm">
+                            Bayar
+                        </a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

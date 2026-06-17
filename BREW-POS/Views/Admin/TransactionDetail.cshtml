@@ -1,0 +1,139 @@
+﻿@model BREW_POS.Models.Bill
+
+@{
+    Layout = "_AdminLayout";
+
+    var payment = Model.Payments.FirstOrDefault();
+}
+
+<h2 class="mb-4">Transaction Detail</h2>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+
+        <h5 class="mb-3">Bill Information</h5>
+
+        <table class="table table-bordered">
+
+            <tr>
+                <th width="250">Bill Code</th>
+                <td>@Model.BillCode</td>
+            </tr>
+
+            <tr>
+                <th>Bill Name</th>
+                <td>@Model.BillName</td>
+            </tr>
+
+            <tr>
+                <th>Date</th>
+                <td>@Model.BillDate</td>
+            </tr>
+
+            <tr>
+                <th>Status</th>
+                <td>@Model.Status</td>
+            </tr>
+
+        </table>
+
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+
+        <h5 class="mb-3">Items</h5>
+
+        <table class="table table-striped">
+
+            <thead>
+                <tr>
+                    <th>Menu</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model.BillDetails)
+                {
+                    <tr>
+
+                        <td>
+                            @item.Menu?.MenuName
+                        </td>
+
+                        <td>
+                            @(item.Qty ?? 0)
+                        </td>
+
+                        <td>
+                            Rp @((item.Price ?? 0).ToString("N0"))
+                        </td>
+
+                        <td>
+                            Rp @((item.Subtotal ?? 0).ToString("N0"))
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+
+        <h5 class="mb-3">Payment Information</h5>
+
+        <table class="table table-bordered">
+
+            <tr>
+                <th width="250">Payment Method</th>
+                <td>
+                    @(payment?.PaymentMethod ?? "-")
+                </td>
+            </tr>
+
+            <tr>
+                <th>Subtotal</th>
+                <td>
+                    Rp @((Model.SubTotal ?? 0).ToString("N0"))
+                </td>
+            </tr>
+
+            <tr>
+                <th>Tax</th>
+                <td>
+                    Rp @(((Model.GrandTotal ?? 0) - (Model.SubTotal ?? 0)).ToString("N0"))
+                </td>
+            </tr>
+
+            <tr class="table-success">
+
+                <th>Grand Total</th>
+
+                <td>
+                    <strong>
+                        Rp @((Model.GrandTotal ?? 0).ToString("N0"))
+                    </strong>
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+</div>
+
+<a href="/Admin/SalesReport"
+   class="btn btn-secondary">
+    Kembali
+</a>

@@ -1,0 +1,77 @@
+﻿@model IEnumerable<BREW_POS.Models.Bill>
+
+@if (!Model.Any())
+{
+    <p class="text-muted text-center">
+        Belum ada bill aktif
+    </p>
+}
+else
+{
+    <div class="list-group">
+
+        @foreach (var bill in Model)
+        {
+            <div class="list-group-item border-0 shadow-sm mb-2 rounded">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <!-- INFO -->
+                    <div>
+
+                        <h6 class="fw-bold mb-1">
+                            @bill.BillName
+                        </h6>
+
+                        <small class="text-muted">
+
+                            Rp @bill.SubTotal
+
+                        </small>
+
+                    </div>
+
+                    <!-- ACTION -->
+                    <div class="d-flex">
+
+                        <!-- OPEN -->
+                        <a href="/Order/OpenBill/@bill.BillId"
+                           class="btn btn-primary btn-sm me-2">
+
+                            Buka
+
+                        </a>
+
+                        <button type="button"
+                                class="btn btn-warning btn-sm me-2 rename-btn"
+                                data-id="@bill.BillId"
+                                data-name="@bill.BillName">
+                            Rename
+                        </button>
+
+                        <!-- DELETE -->
+                        <form asp-action="DeleteBill"
+                              method="post">
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@bill.BillId" />
+
+                            <button type="button"
+                                    class="btn btn-danger btn-sm delete-bill-btn"
+                                    data-id="@bill.BillId"
+                                    data-name="@bill.BillName">
+                                ✕
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+}
